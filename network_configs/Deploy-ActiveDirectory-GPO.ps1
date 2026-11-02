@@ -1,7 +1,7 @@
 <#
 ================================================================================
 Windows Server Active Directory (AD DS) & GPO Deployment Automation
-Author: MD. Mahamudul Hasan (IT Officer)
+Author: MD. Mahamudul Hasan
 Repository: Enterprise-Network-VLAN-ActiveDirectory-Setup
 Target OS: Windows Server 2022 / 2019 Datacenter / Standard
 ================================================================================

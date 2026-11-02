@@ -1,6 +1,6 @@
 # ==============================================================================
 # MikroTik RouterOS v7.x Multi-VLAN Segmentation & Firewall Topology
-# Author: MD. Mahamudul Hasan (IT Officer)
+# Author: MD. Mahamudul Hasan
 # Repository: Enterprise-Network-VLAN-ActiveDirectory-Setup
 # Target Hardware: MikroTik CCR1009 / RB4011 / RB3011 / hEX S
 # ==============================================================================
