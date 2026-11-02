@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Network VLAN & Active Directory DC Setup — NOC Console</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <span class="flex size-3 rounded-full bg-cyan-400 animate-pulse"></span>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            <i class="fa-solid fa-network-wired text-cyan-400"></i>
+            Enterprise Multi-VLAN Network &amp; Active Directory DC
+          </h1>
+          <p class="text-xs text-slate-400 font-mono">MikroTik RouterOS 802.1Q Trunking · Windows Server 2022 AD DS · GPO Security</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 font-mono text-xs">
+        <div class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded">
+          <span class="text-slate-400">CORE GATEWAY:</span>
+          <span class="text-emerald-400 font-bold ml-1">MIKROTIK ROUTEROS</span>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded">
+          <span class="text-slate-400">DOMAIN:</span>
+          <span class="text-cyan-400 font-bold ml-1">ENTERPRISE.LOCAL</span>
+        </div>
+        <a href="https://github.com/MHMITHUN/Enterprise-Network-VLAN-ActiveDirectory-Setup" target="_blank"
+           class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-3 py-1.5 rounded transition flex items-center gap-1.5">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub Repo</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <!-- SECTION 1: 4-VLAN SEGMENTATION TOPOLOGY GRID -->
+    <section>
+      <div class="border-b border-slate-800 pb-3 mb-6">
+        <span class="text-xs font-mono text-cyan-400 font-bold tracking-wider uppercase">MODULE 01 · 802.1Q ARCHITECTURE</span>
+        <h2 class="text-xl font-bold text-white">Segmented Enterprise VLAN Infrastructure</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Isolated Layer 2 / Layer 3 broadcast domains separating management servers, CCTV cameras, factory biometrics, and corporate workstations.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
+        <!-- VLAN 10 -->
+        <div class="bg-slate-900 border border-cyan-500/40 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-cyan-500/20 text-cyan-300 font-bold px-2 py-0.5 rounded text-[11px]">VLAN 10</span>
+              <span class="size-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <h3 class="text-sm font-bold text-white font-sans">Core Servers &amp; Mgmt</h3>
+            <p class="text-[11px] text-slate-400 mt-1">192.168.10.0/24 (Gateway: .1)</p>
+            <div class="mt-3 space-y-1 text-slate-300 text-[11px]">
+              <div>• Active Directory DC (.2)</div>
+              <div>• Synology Backup NAS (.15)</div>
+              <div>• MySQL Database (.5)</div>
+            </div>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+            RESTRICTED ACCESS ONLY
+          </div>
+        </div>
+
+        <!-- VLAN 20 -->
+        <div class="bg-slate-900 border border-rose-500/40 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded text-[11px]">VLAN 20</span>
+              <span class="size-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <h3 class="text-sm font-bold text-white font-sans">IP CCTV Surveillance</h3>
+            <p class="text-[11px] text-slate-400 mt-1">192.168.20.0/24 (Gateway: .1)</p>
+            <div class="mt-3 space-y-1 text-slate-300 text-[11px]">
+              <div>• 64+ Hikvision/Dahua IP Cams</div>
+              <div>• 64-Channel NVR Storage (.10)</div>
+              <div>• WAN Dropped by Firewall</div>
+            </div>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-800 text-[10px] text-rose-400 font-bold">
+            WAN BLOCKED (ZERO BOTNETS)
+          </div>
+        </div>
+
+        <!-- VLAN 30 -->
+        <div class="bg-slate-900 border border-emerald-500/40 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded text-[11px]">VLAN 30</span>
+              <span class="size-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <h3 class="text-sm font-bold text-white font-sans">Biometrics &amp; Hardware</h3>
+            <p class="text-[11px] text-slate-400 mt-1">192.168.30.0/24 (Gateway: .1)</p>
+            <div class="mt-3 space-y-1 text-slate-300 text-[11px]">
+              <div>• ZKTeco Terminals (.12, .13)</div>
+              <div>• Zebra Thermal Printers (.25)</div>
+              <div>• Handheld Barcode Scanners</div>
+            </div>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+            QoS SHIFT PRIORITY 20M
+          </div>
+        </div>
+
+        <!-- VLAN 40 -->
+        <div class="bg-slate-900 border border-amber-500/40 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded text-[11px]">VLAN 40</span>
+              <span class="size-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <h3 class="text-sm font-bold text-white font-sans">Admin &amp; ERP Clients</h3>
+            <p class="text-[11px] text-slate-400 mt-1">192.168.40.0/24 (Gateway: .1)</p>
+            <div class="mt-3 space-y-1 text-slate-300 text-[11px]">
+              <div>• 80+ Corporate PCs</div>
+              <div>• Merchandising & Accounts</div>
+              <div>• Active Directory Domain Joined</div>
+            </div>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-800 text-[10px] text-amber-400 font-bold">
+            GPO SECURITY ENFORCED
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: INTERACTIVE ICMP PING TERMINAL & ACTIVE DIRECTORY GPO INSPECTOR -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Interactive ICMP Ping Terminal (Left: 7 Cols) -->
+      <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <span class="text-[10px] font-mono text-cyan-400 font-bold tracking-wider uppercase">DIAGNOSTIC TOOL</span>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-terminal text-cyan-400"></i>
+                MikroTik RouterOS ICMP Echo Diagnostic Terminal
+              </h3>
+            </div>
+            <span class="text-xs font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded">
+              L3 Ping Engine
+            </span>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex flex-wrap gap-2 mb-3 font-mono text-xs">
+            <select id="targetIpSelect" onchange="document.getElementById('customIp').value=this.value"
+                    class="bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+              <option value="192.168.20.101">CAM-01 (Main Gate Turnstiles) — 192.168.20.101</option>
+              <option value="192.168.10.2">Windows Server AD DS (DC) — 192.168.10.2</option>
+              <option value="192.168.30.12">ZKTeco Face Terminal — 192.168.30.12</option>
+              <option value="192.168.30.25">Zebra ZT411 Thermal Printer — 192.168.30.25</option>
+              <option value="8.8.8.8">External DNS (Google) — 8.8.8.8</option>
+            </select>
+            <input type="text" id="customIp" value="192.168.20.101"
+                   class="bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-cyan-300 w-36">
+            <button onclick="runPing()" id="pingBtn"
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-1.5 rounded transition">
+              Send ICMP Ping
+            </button>
+          </div>
+
+          <!-- Terminal Output Screen -->
+          <pre id="pingTerminal" class="bg-black/95 border border-slate-800 rounded-xl p-4 font-mono text-xs text-cyan-300 overflow-x-auto leading-relaxed shadow-inner min-h-[220px]">
+[admin@MikroTik-CCR1009] &gt; /ping 192.168.20.101 count=4
+HOST                                     SIZE  TTL TIME     STATUS
+192.168.20.101                             56   64 0.38ms   echo reply
+192.168.20.101                             56   64 0.41ms   echo reply
+192.168.20.101                             56   64 0.35ms   echo reply
+192.168.20.101                             56   64 0.44ms   echo reply
+    sent=4 received=4 packet-loss=0% min-rtt=0.35ms avg-rtt=0.395ms max-rtt=0.44ms
+[NOC STATUS] L2 Trunk 802.1Q handshake optimal. Zero packet drop on VLAN 20 interface.
+          </pre>
+        </div>
+
+        <div class="mt-4 p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-slate-400">
+          <span class="text-cyan-400 font-bold">Firewall Validation:</span> Inter-VLAN routing drops unauthorized cross-talk automatically while allowing AD authentication (LDAP port 389/636, Kerberos 88, SMB 445).
+        </div>
+      </div>
+
+      <!-- Active Directory & GPO Security Inspector (Right: 5 Cols) -->
+      <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold tracking-wider uppercase">WINDOWS SERVER 2022</span>
+            <h3 class="text-base font-bold text-white flex items-center gap-2 mt-0.5">
+              <i class="fa-solid fa-server text-emerald-400"></i>
+              Active Directory Domain Controller (AD DS)
+            </h3>
+          </div>
+
+          <div class="space-y-3 font-mono text-xs">
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="flex items-center justify-between text-slate-300 font-bold">
+                <span>GPO 01: USB Removable Media Lock</span>
+                <span class="text-emerald-400">ENFORCED</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Blocks unauthorized USB flash drives across all production & merchandising client workstations to prevent malware & IP theft.</p>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="flex items-center justify-between text-slate-300 font-bold">
+                <span>GPO 02: Synology NAS Automated Drive Z:</span>
+                <span class="text-emerald-400">ENFORCED</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Automatically maps encrypted SMB3 network share (\\192.168.10.15\Backup$) for nightly differential file backups.</p>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="flex items-center justify-between text-slate-300 font-bold">
+                <span>GPO 03: Password & Account Lockout</span>
+                <span class="text-emerald-400">ENFORCED</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">12-char minimum, complex alphanumeric + symbols, 5 failed attempts lockout (30-min reset) conforming to ISO 27001.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] font-mono">
+          <span class="text-slate-400">OU Hierarchy:</span>
+          <span class="text-emerald-400 font-bold">Enterprise-HQ (8 Sub-OUs Synced)</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500 font-mono">
+    Developed by <span class="text-slate-300 font-bold">MD. Mahamudul Hasan</span> · IT Officer &amp; Surveillance Systems Specialist · MIT License
+  </footer>
+
+  <script>
+    function runPing() {
+      const ip = document.getElementById('customIp').value.trim();
+      const term = document.getElementById('pingTerminal');
+      const btn = document.getElementById('pingBtn');
+
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+      term.innerText = `[admin@MikroTik-CCR1009] > /ping ${ip} count=4\nSending ICMP echo requests...`;
+
+      setTimeout(() => {
+        const r1 = (0.35 + Math.random() * 0.15).toFixed(2);
+        const r2 = (0.35 + Math.random() * 0.15).toFixed(2);
+        const r3 = (0.35 + Math.random() * 0.15).toFixed(2);
+        const r4 = (0.35 + Math.random() * 0.15).toFixed(2);
+        const avg = (((parseFloat(r1)+parseFloat(r2)+parseFloat(r3)+parseFloat(r4))/4)).toFixed(3);
+
+        let out = `[admin@MikroTik-CCR1009] > /ping ${ip} count=4\n`;
+        out += `HOST                                     SIZE  TTL TIME     STATUS\n`;
+        out += `${ip.padEnd(40, ' ')} 56   64 ${r1}ms   echo reply\n`;
+        out += `${ip.padEnd(40, ' ')} 56   64 ${r2}ms   echo reply\n`;
+        out += `${ip.padEnd(40, ' ')} 56   64 ${r3}ms   echo reply\n`;
+        out += `${ip.padEnd(40, ' ')} 56   64 ${r4}ms   echo reply\n`;
+        out += `    sent=4 received=4 packet-loss=0% min-rtt=0.35ms avg-rtt=${avg}ms max-rtt=0.50ms\n\n`;
+
+        if (ip.startsWith('192.168.20.')) {
+          out += `[FIREWALL VERDICT] Destination belongs to VLAN 20 (IP CCTV). Internal L2 switch path validated. WAN outbound dropped by rule.\n`;
+        } else if (ip.startsWith('192.168.10.')) {
+          out += `[FIREWALL VERDICT] Destination belongs to VLAN 10 (Management & Servers). Encrypted SMB/Kerberos ports responding.\n`;
+        } else if (ip.startsWith('192.168.30.')) {
+          out += `[FIREWALL VERDICT] Destination belongs to VLAN 30 (Biometrics & Printers). High QoS priority queue assigned.\n`;
+        } else {
+          out += `[FIREWALL VERDICT] Destination routed via external WAN interface ether1 gateway.\n`;
+        }
+
+        term.innerText = out;
+        btn.innerText = 'Send ICMP Ping';
+      }, 700);
+    }
+  </script>
+</body>
+</html>
